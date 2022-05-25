@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:superstore/fb_controllers/fb_auth_controllers.dart';
 import 'package:superstore/widget/logo.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -9,7 +10,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
   late TextEditingController _emailTextController;
   late TextEditingController _passwordTextController;
 
@@ -31,6 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailTextController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 labelText: 'Email',
                 errorText: _emailError,
                 labelStyle:
-                const TextStyle(color: Colors.redAccent, fontSize: 15),
+                    const TextStyle(color: Colors.redAccent, fontSize: 15),
                 prefixIcon: const Icon(
                   Icons.email,
                   color: Colors.redAccent,
@@ -90,7 +91,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 labelText: 'Password',
                 errorText: _passwordError,
                 labelStyle:
-                const TextStyle(color: Colors.redAccent, fontSize: 15),
+                    const TextStyle(color: Colors.redAccent, fontSize: 15),
                 prefixIcon: const Icon(
                   Icons.lock,
                   color: Colors.redAccent,
@@ -164,5 +165,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
   }
 
-  void register() {}
+  void register() async {
+    bool status = await FbAuthController().createAccount(
+        context: context,
+        email: _emailTextController.text,
+        password: _passwordTextController.text);
+    if(status){
+      Navigator.pushReplacementNamed(context, '/MainScreen');
+    }
+  }
 }

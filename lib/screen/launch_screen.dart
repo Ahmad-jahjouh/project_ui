@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:superstore/fb_controllers/fb_auth_controllers.dart';
 import 'package:superstore/widget/logo.dart';
 
 class LaunchScreen extends StatefulWidget {
@@ -12,13 +14,25 @@ class LaunchScreen extends StatefulWidget {
 }
 
 class _LaunchScreenState extends State<LaunchScreen> {
+
+  late StreamSubscription stream;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/LoginScreen');
+      stream = FbAuthController().checkUserStatus(({required bool loggedIn}) {
+        String route = loggedIn ? '/MainScreen' : '/LoginScreen';
+        Navigator.pushReplacementNamed(context, route);
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    stream.cancel();
+    super.dispose();
   }
 
   @override

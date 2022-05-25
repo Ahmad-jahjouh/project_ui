@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:superstore/fb_controllers/fb_auth_controllers.dart';
 
 import '../widget/logo.dart';
 
@@ -127,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: () {
                 preFormLogin();
-                Navigator.pushReplacementNamed(context, '/MainScreen');
               },
               child: const Text(
                 'Login',
@@ -189,11 +189,21 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void login() {}
+  void login() async {
+    bool stauts = await FbAuthController().signIn(
+        context: context,
+        email: _emailTextController.text,
+        password: _passwordTextController.text);
+    if(stauts){
+      Navigator.pushReplacementNamed(context, '/MainScreen');
+    }
+  }
 
   void showSnacBar() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(''),),
+      SnackBar(
+        content: Text(''),
+      ),
     );
   }
 }

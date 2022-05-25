@@ -22,9 +22,32 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       leading: IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-      actions: [IconButton(onPressed: () {
-        Navigator.pushNamed(context, '/FavoriteScreen');
-      }, icon: const Icon(Icons.favorite_outline))],
+      actions: [
+        PopupMenuButton<String>(
+          offset: const Offset(-10,40),
+          color: Colors.redAccent.shade100,
+          onSelected: (String value){
+            if(value == 'f') {
+              Navigator.pushNamed(context, '/FavoriteScreen');
+            }else{
+              Navigator.pushNamed(context, '/CreateProductScreen');
+            }
+          },
+          itemBuilder: (context){
+          return const [
+            PopupMenuItem(
+              value: 'f',
+                child: Text('Favorite'),
+            ),
+            PopupMenuItem(
+                value: 'a',
+                child: Text('Add Product'),)
+          ];
+        },)
+      ],
+      // actions: [IconButton(onPressed: () {
+      //   Navigator.pushNamed(context, '/FavoriteScreen');
+      // }, icon: const Icon(Icons.favorite_outline))],
     );
   }
 

@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:superstore/fb_controllers/fb_fire_store_controller.dart';
+import 'package:superstore/models/cart.dart';
+import 'package:superstore/models/helpers.dart';
+import 'package:superstore/provider/cart-provider.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({Key? key}) : super(key: key);
@@ -8,152 +14,129 @@ class ProductScreen extends StatefulWidget {
   State<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _ProductScreenState extends State<ProductScreen> with Helpers {
+  String? name;
+  String? gender;
+  String? price;
+  String? description;
+  String? id;
+  String? email;
+
   @override
   Widget build(BuildContext context) {
+    ModalRoute? modalRoute = ModalRoute.of(context);
+    if (modalRoute != null) {
+      Map<String, dynamic> map =
+          modalRoute.settings.arguments as Map<String, dynamic>;
+      id = map['id'];
+      email = map['email'];
+      name = map['name'];
+      gender = map['gender'];
+      price = map['price'];
+      description = map['description'];
+    }
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.white,
-        title: const Text(
-          'Labtop',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 25,
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
+          title: const Text(
+            'Product',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 25,
+            ),
           ),
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/FavoriteScreen');
-              },
-              icon: const Icon(Icons.favorite_outline))
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            color: Colors.grey.shade800,
-            height: 230,
-            width: double.infinity,
-            child: Image.asset(
-              'images/background_launcg_screen.jpg',
-              height: double.infinity,
+        body: Column(
+          children: [
+            Container(
+              color: Colors.grey.shade800,
+              height: 300,
               width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: const [
-                      Text(
-                        'Gucci Sunglasses',
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                      Expanded(
-                          child: Text(
-                        '\$ 45',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(fontSize: 18, color: Colors.redAccent),
-                      )),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Description',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'If you’re offered a seat on a rocket ship, don’t ask what seat! Just get on board and move the sail towards the destination.',
-                    style: TextStyle(fontSize: 14,color: Colors.grey),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('ADD TO CART'),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      primary: Colors.redAccent,
-                      minimumSize: const Size(60, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'You May Also Like',
-                    style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold ),
-                  ),
-                ],
+              child: Image.asset(
+                'images/background_launcg_screen.jpg',
+                height: double.infinity,
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(itemBuilder: (context, index) {
-              return Container(
-                color: Colors.grey.shade100,
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                height: 100,
-                child: Row(
+            Container(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'images/background_launcg_screen.jpg',
-                      height: double.infinity,
-                      width: 120,
-                      fit: BoxFit.cover,
-                    ),
-                    const SizedBox(width: 15),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                    Row(
+                      children: [
                         Text(
-                          'white Dress',
-                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          name ?? 'null',
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 5),
-                        Text(
-                          'Women',
-                          style: TextStyle(color: Colors.grey, fontSize: 13),
-                        ),
-                        // IconButton(
-                        //     onPressed: () {},
-                        //     icon: Icon(
-                        //       Icons.favorite_border,
-                        //       color: Colors.black,
-                        //     )),
+                        Expanded(
+                            child: Text(
+                          '\$ ${price ?? 'null'}',
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.redAccent),
+                        )),
                       ],
                     ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: const [
-                          Expanded(
-                            child: Text(
-                              '\$ 15',
-                              style: TextStyle(
-                                  color: Colors.redAccent, fontSize: 16),
-                            ),
-                          ),
-                        ],
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Gender',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      gender ?? 'null',
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Description',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      description ?? 'null',
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      onPressed: () async {
+                        bool status = await FbFireStoreController().addToCart(cart:getCart(id!));
+                        String message = status ? 'Add Successfully' : 'Add Field';
+                        showSnackBar(context: context, message: message);
+                      },
+                      child: const Text('ADD TO CART'),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        primary: Colors.redAccent,
+                        minimumSize: const Size(60, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
-                    )
+                    ),
+                    const SizedBox(height: 20),
                   ],
                 ),
-              );
-            },itemCount: 3),
-          ),
-        ],
-      ),
-    );
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Cart getCart(String id){
+    Cart cart = Cart();
+    cart.id = id;
+    // cart.email = email;
+    return cart;
   }
 }
